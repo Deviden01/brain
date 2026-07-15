@@ -1,69 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,500&display=swap');
 @import "tailwindcss";
 
+/* ── Design Tokens: Modern Dark Cinema ── */
 :root {
-  --bg: #05050A;
-  --fg: #f1f5f9;
-  --accent: #6366f1;
-  --accent-light: #818cf8;
-  --muted: #1e293b;
-  --border: rgba(255, 255, 255, 0.08);
+  --bg-deep:          #020203;
+  --bg-base:          #050506;
+  --bg-elevated:      #0a0a0c;
+  --surface:          rgba(255, 255, 255, 0.05);
+  --fg:               #EDEDEF;
+  --fg-muted:         #8A8F98;
+  --accent:           #6366f1;
+  --accent-sec:       #818cf8;
+  --accent-glow:      rgba(99, 102, 241, 0.2);
+  --border:           rgba(255, 255, 255, 0.08);
+  --border-strong:    rgba(255, 255, 255, 0.12);
+  --radius:           16px;
+  --radius-pill:      9999px;
+  --easing:           cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-* {
+/* ── Reset ── */
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
-html,
+/* ── Base: gradient background, never flat ── */
+html {
+  background: #020203;
+}
+
 body {
-  background: var(--bg);
+  background: linear-gradient(180deg, #0a0a0f 0%, #020203 100%);
+  background-attachment: fixed;
   color: var(--fg);
-  font-family: 'Inter', sans-serif;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  padding-left: env(safe-area-inset-left, 0px);
-  padding-right: env(safe-area-inset-right, 0px);
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Safe area helper classes */
-.pt-safe { padding-top: max(0.75rem, env(safe-area-inset-top)); }
-.pb-safe { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
-.px-safe { padding-left: max(0.75rem, env(safe-area-inset-left)); padding-right: max(0.75rem, env(safe-area-inset-right)); }
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.7); }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: var(--muted);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 3px;
-}
-
-/* Glassmorphism utility */
+/* ── Glassmorphism utility ── */
 .glass {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
   border: 1px solid var(--border);
 }
 
-/* Brain glow pulse animation */
-@keyframes brain-pulse {
-  0%, 100% { opacity: 0.15; transform: scale(1); }
-  50% { opacity: 0.25; transform: scale(1.05); }
+/* ── Ambient blob animation ── */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -20px) scale(1.05); }
+  66%       { transform: translate(-20px, 15px) scale(0.97); }
 }
+.blob { animation: blob-drift 12s ease-in-out infinite; }
+.blob-delay { animation-delay: -6s; }
 
-.brain-glow {
-  animation: brain-pulse 4s ease-in-out infinite;
-}
+/* ── Font utilities ── */
+.font-display { font-family: var(--font-display, serif); }
 
-/* Font utility */
-.font-display {
-  font-family: 'Cormorant Garamond', serif;
+/* ── Safe area utilities ── */
+.pt-safe { padding-top: max(0.75rem, env(safe-area-inset-top, 0px)); }
+.pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px)); }
+.mb-safe { margin-bottom: max(1rem, env(safe-area-inset-bottom, 0px)); }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

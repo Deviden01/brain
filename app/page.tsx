@@ -7,6 +7,42 @@ import BrainCanvas from '@/components/BrainCanvas'
 import SearchBar from '@/components/SearchBar'
 import { Memory } from '@/types/memory'
 
+// SVG Icons — no emoji
+const ZapIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </svg>
+)
+
+const XIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+    <path d="M18 6L6 18M6 6l12 12"/>
+  </svg>
+)
+
+const SpinnerIcon = () => (
+  <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeOpacity="0.3"/>
+    <path d="M12 2v4" strokeOpacity="1"/>
+  </svg>
+)
+
+const GLASS_CARD = {
+  background: 'rgba(10, 10, 15, 0.8)',
+  backdropFilter: 'blur(32px)',
+  WebkitBackdropFilter: 'blur(32px)',
+  border: '1px solid rgba(255,255,255,0.08)',
+  boxShadow: '0 16px 48px -12px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.1) inset',
+} as const
+
+const GLASS_MODAL = {
+  background: 'rgba(10, 10, 20, 0.95)',
+  backdropFilter: 'blur(40px)',
+  WebkitBackdropFilter: 'blur(40px)',
+  border: '1px solid rgba(255,255,255,0.09)',
+  boxShadow: '0 32px 80px -16px rgba(0,0,0,0.95), 0 1px 0 rgba(255,255,255,0.15) inset',
+} as const
+
 export default function HomePage() {
   const [memories, setMemories] = useState<Memory[]>([])
   const [filtered, setFiltered] = useState<Memory[]>([])
@@ -14,20 +50,15 @@ export default function HomePage() {
   const [titleText, setTitleText] = useState('')
   const [isDumping, setIsDumping] = useState(false)
   const [isMobileDumpOpen, setIsMobileDumpOpen] = useState(false)
-
   const [isExpanded, setIsExpanded] = useState(false)
 
-  // Fetch initial data
   useEffect(() => {
     fetch('/api/memory')
       .then(res => res.json())
       .then(data => {
-        if(Array.isArray(data)) {
-          setMemories(data)
-          setFiltered(data)
-        }
+        if (Array.isArray(data)) { setMemories(data); setFiltered(data) }
       })
-      .catch(err => console.error("Gagal load data", err))
+      .catch(err => console.error('Gagal load data', err))
   }, [])
 
   const handleDump = async () => {
@@ -37,263 +68,216 @@ export default function HomePage() {
       const res = await fetch('/api/memory', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rawText, title: titleText })
+        body: JSON.stringify({ rawText, title: titleText }),
       })
       const newMemory = await res.json()
-      if (newMemory && newMemory.id) {
+      if (newMemory?.id) {
         setMemories(prev => [newMemory, ...prev])
         setFiltered(prev => [newMemory, ...prev])
-        setRawText('')
-        setTitleText('')
-        setIsExpanded(false)
-        setIsMobileDumpOpen(false)
+        setRawText(''); setTitleText(''); setIsExpanded(false); setIsMobileDumpOpen(false)
       } else {
-        alert("Gagal dump: " + JSON.stringify(newMemory))
+        alert('Gagal dump: ' + JSON.stringify(newMemory))
       }
     } catch (e) {
-      alert("Error: " + e)
+      alert('Error: ' + e)
     } finally {
       setIsDumping(false)
     }
   }
 
+  const kpiStats = [
+    { label: 'Memori', value: memories.length },
+    { label: 'Tag', value: [...new Set(memories.flatMap(m => m.tags || []))].length },
+    { label: 'Hari', value: new Set(memories.map(m => m.created_at ? new Date(m.created_at).toISOString().slice(0, 10) : '')).size },
+  ]
+
   return (
-    <main className="min-h-dvh h-dvh w-full flex flex-col bg-[#05050A] overflow-hidden relative">
-      <div className="relative z-50">
-        <Navbar />
+    <main className="h-dvh w-full flex flex-col overflow-hidden relative">
+
+      {/* Ambient blobs — purely decorative */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="blob absolute top-[15%] left-[10%] w-[50vw] h-[50vw] max-w-[480px] max-h-[480px] rounded-full bg-indigo-600/12 blur-[100px]" />
+        <div className="blob blob-delay absolute bottom-[10%] right-[8%] w-[40vw] h-[40vw] max-w-[360px] max-h-[360px] rounded-full bg-teal-500/10 blur-[120px]" />
       </div>
 
-      {/* Full-Screen Brain Canvas Background + Ambient Light Orbs */}
-      <div className="absolute inset-0 z-0 pt-14 pointer-events-auto">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/15 rounded-full blur-[140px] pointer-events-none animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-teal-500/15 rounded-full blur-[140px] pointer-events-none" />
+      {/* Navbar (fixed, z-50) */}
+      <Navbar />
+
+      {/* Brain Canvas — fills full screen behind overlays */}
+      <div className="absolute inset-0 z-0 pointer-events-auto">
         <BrainCanvas memories={filtered} />
       </div>
 
       {/* Floating UI Overlay */}
-      <div className="absolute inset-0 z-10 pointer-events-none pt-20 pt-safe sm:pt-24 px-3 sm:px-6 pb-6 pb-safe flex flex-col justify-between">
-        
-        {/* Top Floating Section (Header & Search Bar) */}
-        <div className="flex flex-col md:flex-row justify-between items-start gap-3 sm:gap-4 pointer-events-none max-w-7xl mx-auto w-full">
-          {/* Header Island */}
+      <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between px-3 sm:px-5 pb-safe"
+        style={{ paddingTop: 'max(72px, calc(52px + env(safe-area-inset-top, 0px) + 8px))' }}>
+
+        {/* ── Top Row: Header Island + Search ── */}
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-3 max-w-7xl mx-auto w-full">
+
+          {/* Header island */}
           <motion.div
-            initial={{ opacity: 0, x: -20, scale: 0.98 }}
+            initial={{ opacity: 0, x: -16, scale: 0.97 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.01] hover:border-white/[0.14]"
-            style={{
-              background: 'rgba(13, 15, 26, 0.75)',
-              backdropFilter: 'blur(32px)',
-              WebkitBackdropFilter: 'blur(32px)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              boxShadow: '0 12px 40px -10px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.1) inset',
-            }}
+            className="pointer-events-auto rounded-2xl p-4 sm:p-5"
+            style={GLASS_CARD}
           >
-            <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-0.5 sm:mb-1 tracking-tight">
-              Memory <span className="text-indigo-400 font-light">Galaxy</span>
+            <h1 className="font-display text-lg sm:text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight mb-0.5">
+              Memory <span className="text-indigo-400 font-light italic">Galaxy</span>
             </h1>
-            <p className="text-slate-400 text-[11px] sm:text-xs">
-              {memories.length} memori tersimpan · Jelajahi klaster ide & transkrip
+            <p className="text-[var(--fg-muted)] text-[11px] sm:text-xs">
+              {memories.length} memori · Jelajahi klaster ide &amp; transkrip
             </p>
           </motion.div>
 
-          {/* Search Bar */}
+          {/* Search bar */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
-            className="w-full md:w-80 pointer-events-auto"
+            className="w-full sm:w-72 pointer-events-auto"
           >
             <SearchBar memories={memories} onFilter={setFiltered} />
             {filtered.length === 0 && (
-              <div className="mt-2 text-center py-2.5 bg-black/60 backdrop-blur-md rounded-xl text-slate-400 text-xs border border-white/10 shadow-lg">
+              <div className="mt-2 text-center py-2 rounded-xl text-[var(--fg-muted)] text-xs border border-white/10"
+                style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
                 Tidak ada memori yang cocok.
               </div>
             )}
           </motion.div>
         </div>
 
-        {/* Bottom Floating Section (Command Dock & KPI Cards) */}
+        {/* ── Bottom Row: Dock + KPI ── */}
         <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center gap-3 pointer-events-none max-w-4xl mx-auto w-full"
+          className="flex flex-col items-center gap-3 max-w-4xl mx-auto w-full pointer-events-none mb-2 sm:mb-4"
         >
-          {/* Desktop & Tablet Sleek Floating Prompt Capsule */}
+          {/* Desktop prompt capsule */}
           <div className="hidden md:block w-full pointer-events-auto">
-            <div
-              className="p-3.5 sm:p-4 rounded-[26px] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-white/[0.14] group"
-              style={{
-                background: 'rgba(13, 15, 26, 0.8)',
-                backdropFilter: 'blur(36px)',
-                WebkitBackdropFilter: 'blur(36px)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                boxShadow: '0 20px 60px -15px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.12) inset',
-              }}
-            >
-              <div className="flex items-center justify-between gap-3 mb-2 px-1">
-                <div className="flex items-center gap-2">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 text-xs shadow-[0_0_12px_rgba(99,102,241,0.3)]">⚡</span>
-                  <span className="text-white text-xs font-semibold tracking-tight">AI Quick Dump Prompt</span>
+            <div className="rounded-2xl p-4 transition-all duration-300 ease-[var(--easing)]" style={GLASS_CARD}>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex items-center justify-center w-7 h-7 rounded-full text-indigo-400"
+                    style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)', boxShadow: '0 0 10px rgba(99,102,241,0.25)' }}>
+                    <ZapIcon />
+                  </div>
+                  <span className="text-white text-sm font-semibold">AI Quick Dump</span>
                 </div>
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer px-2.5 py-1 rounded-full hover:bg-white/[0.06] border border-transparent hover:border-white/10"
+                  className="text-xs text-[var(--fg-muted)] hover:text-white transition-colors cursor-pointer px-3 py-1.5 rounded-full hover:bg-white/[0.06] border border-transparent hover:border-white/10 min-h-[32px]"
                 >
-                  {isExpanded ? 'Sederhanakan ✕' : 'Tulis Judul Manual +'}
+                  {isExpanded ? 'Tutup' : '+ Judul Manual'}
                 </button>
               </div>
 
               <AnimatePresence>
                 {isExpanded && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="overflow-hidden mb-2"
-                  >
-                    <input
-                      type="text"
-                      value={titleText}
-                      onChange={(e) => setTitleText(e.target.value)}
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} className="overflow-hidden mb-3">
+                    <input type="text" value={titleText} onChange={e => setTitleText(e.target.value)}
                       placeholder="Judul Catatan (opsional)"
-                      className="w-full bg-black/40 text-base md:text-sm text-slate-100 p-3 rounded-2xl border border-white/10 focus:outline-none focus:border-indigo-500/80 focus:shadow-[0_0_20px_rgba(99,102,241,0.25)] transition-all placeholder:text-slate-500"
-                    />
+                      className="w-full bg-black/40 text-sm text-white p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/70 transition-all placeholder:text-[var(--fg-muted)]" />
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="flex gap-2.5 items-center">
-                <textarea 
-                  value={rawText}
-                  onChange={(e) => setRawText(e.target.value)}
-                  placeholder="Paste obrolan / ide panjang di sini... AI akan otomatis merangkum & menata."
-                  className="flex-1 h-13 bg-black/40 text-base md:text-sm text-slate-100 px-4 py-3 rounded-2xl border border-white/10 focus:outline-none focus:border-indigo-500/80 focus:shadow-[0_0_24px_rgba(99,102,241,0.3)] resize-none transition-all placeholder:text-slate-500 custom-scrollbar leading-snug"
-                />
-                <button 
-                  onClick={handleDump}
-                  disabled={isDumping || !rawText.trim()}
-                  className="h-13 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center shadow-[0_0_24px_rgba(99,102,241,0.4)] hover:shadow-[0_0_32px_rgba(99,102,241,0.6)] hover:scale-105 active:scale-95 shrink-0 border border-indigo-400/30"
-                >
-                  {isDumping ? (
-                    <span className="flex items-center gap-2">
-                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Ekstrak...</span>
-                    </span>
-                  ) : (
-                    <span>Dump ke Galaksi ⚡</span>
-                  )}
+              <div className="flex gap-3 items-center">
+                <textarea value={rawText} onChange={e => setRawText(e.target.value)}
+                  placeholder="Paste obrolan / ide panjang... AI akan merangkum &amp; menata otomatis."
+                  className="flex-1 bg-black/40 text-sm text-white px-4 py-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/70 resize-none transition-all placeholder:text-[var(--fg-muted)] leading-snug"
+                  style={{ height: '52px' }} />
+                <button onClick={handleDump} disabled={isDumping || !rawText.trim()}
+                  className="shrink-0 flex items-center justify-center gap-2 px-5 rounded-xl text-white text-sm font-semibold transition-all duration-300 ease-[var(--easing)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer hover:scale-105 active:scale-95 border border-indigo-400/30"
+                  style={{ height: '52px', background: 'linear-gradient(135deg,#4f46e5,#6366f1)', boxShadow: '0 0 24px rgba(99,102,241,0.4)' }}>
+                  {isDumping ? <><SpinnerIcon /><span>Ekstrak...</span></> : <><ZapIcon /><span>Dump</span></>}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Mobile Bottom Control Row */}
-          <div className="flex items-center justify-between w-full gap-2 sm:gap-3 pointer-events-auto">
-            {/* Mobile Quick Dump Trigger Button */}
-            <button
-              onClick={() => setIsMobileDumpOpen(true)}
-              className="md:hidden flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-full shadow-[0_0_24px_rgba(99,102,241,0.4)] flex items-center justify-center gap-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-95 border border-indigo-400/30 cursor-pointer min-h-[44px]"
-            >
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 text-xs">⚡</span>
+          {/* Mobile bottom row */}
+          <div className="flex items-center w-full gap-3 pointer-events-auto">
+            {/* Quick Dump trigger */}
+            <button onClick={() => setIsMobileDumpOpen(true)}
+              className="md:hidden flex-1 flex items-center justify-center gap-2 rounded-full text-white text-sm font-semibold transition-all duration-300 ease-[var(--easing)] active:scale-95 cursor-pointer border border-indigo-400/30"
+              style={{ minHeight: '48px', background: 'linear-gradient(135deg,#4f46e5,#6366f1)', boxShadow: '0 0 20px rgba(99,102,241,0.35)' }}
+              aria-label="Buka Quick Dump AI">
+              <ZapIcon />
               <span>Quick Dump AI</span>
             </button>
 
-            {/* KPI Cards (Compact & weightless pill badges) */}
-            <div
-              className="rounded-full px-3 py-2 flex items-center gap-2 sm:ml-auto shadow-lg backdrop-blur-2xl shrink-0 transition-all duration-300 hover:border-white/[0.14]"
-              style={{
-                background: 'rgba(13, 15, 26, 0.85)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.1) inset',
-              }}
-            >
-              {[
-                { label: 'Memori', value: memories.length },
-                { label: 'Tag', value: [...new Set(memories.flatMap(m => m.tags || []))].length },
-                { label: 'Hari', value: new Set(memories.map(m => m.created_at ? new Date(m.created_at).toISOString().slice(0, 10) : '')).size },
-              ].map(({ label, value }, i) => (
-                <div key={label} className={`px-2 py-0 text-center flex items-center gap-1 sm:gap-1.5 ${i > 0 ? 'border-l border-white/10 pl-2 sm:pl-3' : ''}`}>
-                  <span className="text-xs font-extrabold text-white">{value}</span>
-                  <span className="text-[9px] text-slate-400 uppercase tracking-wider font-semibold">{label}</span>
+            {/* KPI pill */}
+            <div className="flex items-center rounded-full shrink-0 overflow-hidden" style={{
+              background: 'rgba(10,10,15,0.85)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.1) inset',
+            }}>
+              {kpiStats.map(({ label, value }, i) => (
+                <div key={label} className={`px-3 py-2.5 flex flex-col items-center ${i > 0 ? 'border-l border-white/08' : ''}`}>
+                  <span className="text-sm font-bold text-white leading-none">{value}</span>
+                  <span className="text-[9px] text-[var(--fg-muted)] uppercase tracking-wider font-medium mt-0.5">{label}</span>
                 </div>
               ))}
             </div>
           </div>
         </motion.div>
-
       </div>
 
-      {/* Mobile Quick Dump Modal (iOS Anti-Zoom & Safe Areas) */}
+      {/* Mobile Quick Dump Modal */}
       <AnimatePresence>
         {isMobileDumpOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md pointer-events-auto"
-            onClick={() => setIsMobileDumpOpen(false)}
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4 pointer-events-auto"
+            style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+            onClick={() => setIsMobileDumpOpen(false)}>
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 40 }}
+              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-t-[32px] sm:rounded-3xl p-6 pb-8 pb-safe w-full max-w-lg border-t sm:border border-white/10 shadow-2xl relative max-h-[90vh] overflow-y-auto"
-              style={{
-                background: 'rgba(13, 15, 26, 0.95)',
-                backdropFilter: 'blur(36px)',
-                WebkitBackdropFilter: 'blur(36px)',
-                border: '1px solid rgba(255, 255, 255, 0.09)',
-                boxShadow: '0 25px 80px -15px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 255, 255, 0.15) inset',
-              }}
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="w-10 h-1 bg-white/15 rounded-full mx-auto mb-4 sm:hidden" />
+              className="w-full sm:max-w-lg sm:rounded-2xl rounded-t-3xl p-6 pb-safe max-h-[90dvh] overflow-y-auto"
+              style={GLASS_MODAL}
+              onClick={e => e.stopPropagation()}>
+
+              {/* Drag handle */}
+              <div className="w-10 h-1 rounded-full mx-auto mb-5 sm:hidden" style={{ background: 'rgba(255,255,255,0.2)' }} />
+
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-400 text-xs shadow-[0_0_12px_rgba(99,102,241,0.3)]">⚡</span>
+                <div className="flex items-center gap-2.5">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full text-indigo-400"
+                    style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)', boxShadow: '0 0 12px rgba(99,102,241,0.25)' }}>
+                    <ZapIcon />
+                  </div>
                   <h2 className="text-white text-base font-semibold">Quick Dump AI</h2>
                 </div>
-                <button
-                  onClick={() => setIsMobileDumpOpen(false)}
-                  className="w-11 h-11 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-colors hover:bg-white/[0.06]"
-                  aria-label="Tutup modal"
-                >
-                  ✕
+                <button onClick={() => setIsMobileDumpOpen(false)}
+                  className="flex items-center justify-center rounded-xl text-[var(--fg-muted)] hover:text-white transition-colors hover:bg-white/[0.07] cursor-pointer"
+                  style={{ width: '44px', height: '44px' }} aria-label="Tutup">
+                  <XIcon />
                 </button>
               </div>
-              <p className="text-slate-400 text-xs mb-3 leading-relaxed">
-                Isi judul sendiri (opsional) atau biarkan kosong agar AI merangkum otomatis dari obrolan di bawah.
+
+              <p className="text-[var(--fg-muted)] text-xs mb-4 leading-relaxed">
+                Biarkan judul kosong untuk rangkuman otomatis AI.
               </p>
-              <input
-                type="text"
-                value={titleText}
-                onChange={(e) => setTitleText(e.target.value)}
+
+              <input type="text" value={titleText} onChange={e => setTitleText(e.target.value)}
                 placeholder="Judul Catatan (opsional)"
-                className="w-full bg-black/40 text-base sm:text-sm text-slate-100 p-3.5 rounded-2xl border border-white/10 focus:outline-none focus:border-indigo-500/80 focus:shadow-[0_0_20px_rgba(99,102,241,0.25)] mb-3 placeholder:text-slate-500 transition-all"
-              />
-              <textarea 
-                value={rawText}
-                onChange={(e) => setRawText(e.target.value)}
-                placeholder="Paste transkrip obrolan / teks panjang di sini..."
-                className="w-full h-36 bg-black/40 text-base sm:text-sm text-slate-100 p-3.5 rounded-2xl border border-white/10 focus:outline-none focus:border-indigo-500/80 focus:shadow-[0_0_24px_rgba(99,102,241,0.25)] resize-none mb-4 custom-scrollbar placeholder:text-slate-500 transition-all"
-              />
-              <button 
-                onClick={handleDump}
-                disabled={isDumping || !rawText.trim()}
-                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_24px_rgba(99,102,241,0.4)] hover:shadow-[0_0_32px_rgba(99,102,241,0.6)] active:scale-95 border border-indigo-400/30 min-h-[44px]"
-              >
-                {isDumping ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Mengekstrak AI...</span>
-                  </span>
-                ) : (
-                  <span>Simpan & Dump ke Galaksi ⚡</span>
-                )}
+                className="w-full bg-black/40 text-base text-white p-4 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/70 mb-3 placeholder:text-[var(--fg-muted)] transition-all" />
+
+              <textarea value={rawText} onChange={e => setRawText(e.target.value)}
+                placeholder="Paste transkrip / catatan panjang di sini..."
+                className="w-full bg-black/40 text-base text-white p-4 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/70 resize-none mb-4 placeholder:text-[var(--fg-muted)] transition-all"
+                style={{ height: '144px' }} />
+
+              <button onClick={handleDump} disabled={isDumping || !rawText.trim()}
+                className="w-full flex items-center justify-center gap-2 rounded-xl text-white text-sm font-semibold transition-all duration-300 ease-[var(--easing)] disabled:opacity-40 cursor-pointer active:scale-95 border border-indigo-400/30"
+                style={{ minHeight: '52px', background: 'linear-gradient(135deg,#4f46e5,#6366f1)', boxShadow: '0 0 24px rgba(99,102,241,0.4)' }}>
+                {isDumping
+                  ? <><SpinnerIcon /><span>Mengekstrak...</span></>
+                  : <><ZapIcon /><span>Simpan &amp; Dump ke Galaksi</span></>}
               </button>
             </motion.div>
           </motion.div>

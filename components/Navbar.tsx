@@ -9,83 +9,119 @@ const VIEWS = [
   { href: '/timeline', label: 'Timeline' },
 ]
 
+// SVG Icons — no emoji
+const BrainIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+  </svg>
+)
+
+const PlusIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+    <path d="M12 5v14M5 12h14"/>
+  </svg>
+)
+
 export default function Navbar() {
   const pathname = usePathname()
 
   return (
-    <div className="fixed top-2 sm:top-5 inset-x-0 mx-auto max-w-2xl px-3 sm:px-4 z-50 pointer-events-none pt-safe">
-      <motion.header
-        initial={{ opacity: 0, y: -20, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="pointer-events-auto h-13 sm:h-14 rounded-full px-3 sm:px-5 flex items-center justify-between gap-1.5 sm:gap-3 transition-all duration-300 group/nav"
-        style={{
-          background: 'rgba(13, 15, 26, 0.85)',
-          backdropFilter: 'blur(36px)',
-          WebkitBackdropFilter: 'blur(36px)',
-          border: '1px solid rgba(255, 255, 255, 0.09)',
-          boxShadow: '0 12px 40px -10px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(255, 255, 255, 0.12) inset',
-        }}
-      >
-        {/* Brand */}
-        <Link href="/" className="flex items-center gap-2 select-none shrink-0 group">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-110 group-hover:border-indigo-400/60 group-hover:bg-indigo-500/30 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_0_15px_rgba(99,102,241,0.25)]">
-            <span className="text-xs sm:text-sm">⚡</span>
-          </div>
-          <span className="text-xs sm:text-base font-extrabold tracking-tight">
-            <span className="text-indigo-400">2nd</span>
-            <span className="text-white">Brain</span>
-          </span>
-        </Link>
-
-        {/* Segmented control — Otak / Timeline */}
-        <nav
-          className="flex items-center rounded-full p-1 bg-white/[0.04] border border-white/[0.06]"
-          aria-label="View switcher"
-        >
-          {VIEWS.map(({ href, label }) => {
-            const active = pathname === href
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`relative px-3.5 sm:px-5 py-1 sm:py-1.5 min-h-[30px] sm:min-h-[34px] flex items-center justify-center rounded-full text-[11px] sm:text-sm font-semibold transition-colors duration-200 ${
-                  active ? 'text-white' : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {active && (
-                  <motion.span
-                    layoutId="seg-active-pill"
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
-                      boxShadow: '0 2px 16px rgba(99,102,241,0.45)',
-                      zIndex: -1,
-                    }}
-                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                  />
-                )}
-                {label}
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* CTA — Catat Ide */}
-        <Link
-          href="/input"
-          className="shrink-0 flex items-center justify-center gap-1.5 w-8 h-8 sm:w-auto sm:h-auto sm:px-4 sm:py-1.5 min-h-[32px] sm:min-h-[34px] rounded-full text-xs sm:text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_28px_rgba(99,102,241,0.6)] border border-indigo-400/30"
+    <div className="fixed top-0 inset-x-0 z-50 pt-safe pointer-events-none px-3 sm:px-4">
+      <div className="mx-auto max-w-2xl pt-2 sm:pt-3">
+        <motion.header
+          initial={{ opacity: 0, y: -16, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="pointer-events-auto flex items-center justify-between gap-2 rounded-full px-3 sm:px-4"
           style={{
-            background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
+            height: '52px',
+            background: 'rgba(10, 10, 15, 0.85)',
+            backdropFilter: 'blur(36px)',
+            WebkitBackdropFilter: 'blur(36px)',
+            border: '1px solid rgba(255,255,255,0.09)',
+            boxShadow: '0 12px 40px -8px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.1) inset',
           }}
-          aria-label="Catat Ide Baru"
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-          <span className="hidden sm:inline">Catat Ide</span>
-        </Link>
-      </motion.header>
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-2 select-none shrink-0 group min-w-0" aria-label="2nd Brain Home">
+            <div
+              className="flex items-center justify-center rounded-full text-indigo-400 shrink-0 transition-all duration-300 ease-[var(--easing)] group-hover:scale-110 group-hover:text-indigo-300"
+              style={{
+                width: '32px', height: '32px',
+                background: 'rgba(99,102,241,0.15)',
+                border: '1px solid rgba(99,102,241,0.3)',
+                boxShadow: '0 0 12px rgba(99,102,241,0.2)',
+              }}
+            >
+              <BrainIcon />
+            </div>
+            <span className="font-bold tracking-tight text-sm sm:text-base whitespace-nowrap">
+              <span className="text-indigo-400">2nd</span>
+              <span className="text-white">Brain</span>
+            </span>
+          </Link>
+
+          {/* Segmented control */}
+          <nav
+            className="flex items-center rounded-full p-1 shrink-0"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+            aria-label="View switcher"
+          >
+            {VIEWS.map(({ href, label }) => {
+              const active = pathname === href
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className="relative flex items-center justify-center rounded-full font-semibold transition-colors duration-200"
+                  style={{
+                    padding: '6px 14px',
+                    minHeight: '36px',
+                    minWidth: '60px',
+                    fontSize: '12px',
+                    color: active ? '#fff' : 'rgba(148,163,184,1)',
+                  }}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
+                        boxShadow: '0 2px 16px rgba(99,102,241,0.45)',
+                        zIndex: -1,
+                      }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                  {label}
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* CTA */}
+          <Link
+            href="/input"
+            className="shrink-0 flex items-center justify-center gap-1.5 rounded-full font-semibold text-white transition-all duration-300 ease-[var(--easing)] hover:scale-105 active:scale-95"
+            style={{
+              background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
+              border: '1px solid rgba(99,102,241,0.4)',
+              boxShadow: '0 0 18px rgba(99,102,241,0.3)',
+              /* Mobile: square icon; desktop: pill with text */
+              padding: '0 14px',
+              height: '36px',
+              minWidth: '36px',
+              fontSize: '12px',
+            }}
+            aria-label="Catat Ide Baru"
+          >
+            <PlusIcon />
+            <span className="hidden sm:inline">Catat Ide</span>
+          </Link>
+        </motion.header>
+      </div>
     </div>
   )
 }

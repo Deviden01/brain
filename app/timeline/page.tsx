@@ -65,10 +65,11 @@ export default function DashboardPage() {
   }, [memories])
 
   return (
-    <main className="min-h-dvh bg-[#05050A] pb-16 pb-safe overflow-x-hidden">
+    <main className="min-h-dvh pb-safe overflow-x-hidden">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto pt-20 pt-safe sm:pt-28 px-4 sm:px-6 lg:px-8 flex flex-col gap-6 sm:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6 sm:gap-8"
+        style={{ paddingTop: 'max(72px, calc(52px + env(safe-area-inset-top, 0px) + 16px))' }}>
         
         {/* ── 1. Top Header & CTA ── */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
@@ -89,10 +90,11 @@ export default function DashboardPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={() => setIsModalOpen(true)}
-            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 rounded-xl text-white text-sm font-semibold transition-all duration-300 ease-[var(--easing)] hover:scale-105 active:scale-95 cursor-pointer border border-indigo-400/30"
+            style={{ minHeight: '44px', padding: '0 20px', background: 'linear-gradient(135deg,#4f46e5,#6366f1)', boxShadow: '0 0 20px rgba(99,102,241,0.35)' }}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+              <path d="M12 5v14M5 12h14"/>
             </svg>
             Tambah Memori
           </motion.button>
@@ -106,10 +108,10 @@ export default function DashboardPage() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4"
         >
           {[
-            { label: 'Total Memori', value: memories.length, icon: '📦' },
-            { label: 'Kategori Aktif', value: uniqueTags.length, icon: '🏷️' },
-            { label: 'Catatan Minggu Ini', value: memories.length > 0 ? `+${memories.length}` : '0', icon: '📈' },
-            { label: 'Rata-rata Panjang', value: memories.length > 0 ? `${Math.round(memories.reduce((acc, m) => acc + (m.content || m.raw_text || '').split(/\s+/).length, 0) / memories.length)} kata` : '0 kata', icon: '✍️' },
+            { label: 'Total Memori', value: memories.length },
+            { label: 'Kategori Aktif', value: uniqueTags.length },
+            { label: 'Catatan Minggu Ini', value: memories.length > 0 ? `+${memories.length}` : '0' },
+            { label: 'Rata-rata Panjang', value: memories.length > 0 ? `${Math.round(memories.reduce((acc, m) => acc + (m.content || m.raw_text || '').split(/\s+/).length, 0) / memories.length)} kata` : '0 kata' },
           ].map((kpi, i) => (
             <div
               key={i}
@@ -123,8 +125,7 @@ export default function DashboardPage() {
               }}
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-400 text-xs font-semibold tracking-wide uppercase">{kpi.label}</span>
-                <span className="text-lg grayscale opacity-70 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">{kpi.icon}</span>
+                <span className="text-[var(--fg-muted)] text-xs font-semibold tracking-wide uppercase">{kpi.label}</span>
               </div>
               <p className="text-2xl font-extrabold text-white tracking-tight">{kpi.value}</p>
             </div>

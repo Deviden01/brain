@@ -17,26 +17,31 @@ export default function Navbar() {
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="fixed top-0 inset-x-0 z-50 h-14"
+      className="fixed top-0 inset-x-0 z-50 h-16"
       style={{
-        background: 'rgba(9, 9, 28, 0.85)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        background: 'rgba(7, 8, 22, 0.85)',
+        backdropFilter: 'blur(28px)',
+        WebkitBackdropFilter: 'blur(28px)',
+        borderBottom: '1px solid rgba(255,255,255,0.09)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.5)',
       }}
     >
-      <div className="h-full max-w-3xl mx-auto px-4 flex items-center justify-between gap-3">
+      <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-3">
 
         {/* Brand */}
-        <span className="text-sm font-bold select-none shrink-0 tracking-tight">
-          <span className="text-indigo-400">2nd</span>
-          <span className="text-white">Brain</span>
-        </span>
+        <Link href="/" className="flex items-center gap-2 select-none shrink-0 group">
+          <span className="w-8 h-8 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform shadow-lg shadow-indigo-500/10">
+            ⚡
+          </span>
+          <span className="text-base font-extrabold tracking-tight">
+            <span className="text-indigo-400">2nd</span>
+            <span className="text-white">Brain</span>
+          </span>
+        </Link>
 
         {/* Segmented control — Otak / Timeline */}
         <nav
-          className="flex items-center rounded-xl p-0.5"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+          className="flex items-center rounded-xl p-1 bg-white/[0.04] border border-white/[0.08]"
           aria-label="View switcher"
         >
           {VIEWS.map(({ href, label }) => {
@@ -45,17 +50,17 @@ export default function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className={`relative px-4 py-2 min-h-[36px] flex items-center justify-center rounded-[10px] text-sm font-medium transition-colors duration-200 ${
+                className={`relative px-4 sm:px-6 py-2 min-h-[38px] flex items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors duration-200 ${
                   active ? 'text-white' : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
                 {active && (
                   <motion.span
                     layoutId="seg-active"
-                    className="absolute inset-0 rounded-[10px]"
+                    className="absolute inset-0 rounded-lg"
                     style={{
                       background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
-                      boxShadow: '0 2px 12px rgba(99,102,241,0.35)',
+                      boxShadow: '0 2px 14px rgba(99,102,241,0.4)',
                       zIndex: -1,
                     }}
                     transition={{ type: 'spring', stiffness: 320, damping: 32 }}
@@ -70,16 +75,15 @@ export default function Navbar() {
         {/* CTA — Simpan Ide */}
         <Link
           href="/input"
-          className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 min-h-[36px] rounded-xl text-sm font-semibold text-white transition-all duration-150 active:scale-95"
+          className="shrink-0 flex items-center justify-center gap-2 px-4 py-2 min-h-[38px] rounded-xl text-xs sm:text-sm font-semibold text-white transition-all duration-150 active:scale-95 shadow-lg shadow-indigo-500/25"
           style={{
             background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
-            boxShadow: '0 2px 10px rgba(99,102,241,0.30)',
           }}
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
-          <span className="hidden sm:inline">Simpan</span>
+          <span>Catat Ide</span>
         </Link>
 
       </div>

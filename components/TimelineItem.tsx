@@ -28,85 +28,86 @@ export default function TimelineItem({ memory, index }: { memory: Memory; index:
       <motion.div
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: index * 0.055, duration: 0.38, ease: 'easeOut' }}
-        className="flex gap-4 group"
+        transition={{ delay: index * 0.05, duration: 0.35, ease: 'easeOut' }}
+        className="flex gap-4 sm:gap-6 group relative"
       >
-        {/* ── Left: date column + connector line ── */}
-        <div className="flex flex-col items-center shrink-0 w-12">
+        {/* ── Left: date column + glowing node dot + connector line ── */}
+        <div className="flex flex-col items-center shrink-0 w-14 sm:w-16">
           <div
-            className="w-12 rounded-xl flex flex-col items-center py-2 select-none"
+            className="w-full rounded-2xl flex flex-col items-center py-2.5 px-1 select-none transition-transform group-hover:scale-105 shadow-md shadow-indigo-500/10"
             style={{
-              background: 'rgba(99,102,241,0.1)',
-              border: '1px solid rgba(99,102,241,0.2)',
+              background: 'rgba(99,102,241,0.12)',
+              border: '1px solid rgba(99,102,241,0.28)',
             }}
           >
-            <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wide leading-none">
+            <span className="text-[10px] font-extrabold text-indigo-400 uppercase tracking-wider leading-none">
               {day}
             </span>
-            <span className="text-xl font-bold text-white leading-tight mt-0.5">
+            <span className="text-xl sm:text-2xl font-extrabold text-white leading-tight mt-1">
               {dateNum}
             </span>
-            <span className="text-[9px] text-slate-500 uppercase tracking-wide leading-none">
+            <span className="text-[9px] text-slate-400 font-medium uppercase tracking-wider leading-none mt-0.5">
               {month}
             </span>
           </div>
+          {/* Spine dot & vertical line */}
+          <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_10px_#6366f1] my-2" />
           <div
-            className="flex-1 w-px mt-2 min-h-[12px]"
-            style={{ background: 'rgba(99,102,241,0.12)' }}
+            className="flex-1 w-0.5 min-h-[20px] rounded-full"
+            style={{ background: 'linear-gradient(180deg, rgba(99,102,241,0.3) 0%, rgba(255,255,255,0.05) 100%)' }}
           />
         </div>
 
         {/* ── Right: content card ── */}
         <article
-          className="flex-1 mb-3 rounded-2xl cursor-pointer overflow-hidden transition-all duration-200 group-hover:-translate-y-0.5"
+          className="flex-1 mb-5 rounded-2xl cursor-pointer overflow-hidden transition-all duration-200 group-hover:-translate-y-1 group-hover:border-indigo-500/40 relative"
           style={{
             background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
           }}
           onClick={() => setSelected(true)}
         >
           <div
-            className="absolute left-0 inset-y-0 w-0.5 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            style={{ background: 'linear-gradient(180deg, #6366f1, #818cf8)' }}
+            className="absolute left-0 inset-y-0 w-1 bg-indigo-500 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0_0_12px_#6366f1]"
           />
 
-          <div className="p-5 relative">
-            <div className="flex flex-wrap gap-1.5 mb-2.5">
+          <div className="p-5 sm:p-6 relative">
+            <div className="flex flex-wrap gap-1.5 mb-3">
               {(memory.tags || []).map(tag => {
                 const c = getTagColor(tag)
                 return (
                   <span
                     key={tag}
-                    className="text-[11px] px-2 py-0.5 rounded-md font-semibold"
+                    className="text-xs px-2.5 py-1 rounded-lg font-semibold tracking-tight transition-transform hover:scale-105"
                     style={{
                       background: c + '18',
                       color: c,
-                      border: `1px solid ${c}28`,
+                      border: `1px solid ${c}30`,
                     }}
                   >
-                    {tag}
+                    #{tag}
                   </span>
                 )
               })}
             </div>
 
-            <h3 className="font-display text-[17px] font-semibold text-white leading-snug mb-2 group-hover:text-indigo-100 transition-colors">
+            <h3 className="font-display text-lg sm:text-xl font-bold text-white leading-snug mb-2 group-hover:text-indigo-200 transition-colors">
               {memory.title}
             </h3>
 
-            <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed line-clamp-2 mb-4 font-normal">
               {memory.summary}
             </p>
 
             <Link 
               href={`/memory/${memory.id}`}
               onClick={e => e.stopPropagation()}
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-indigo-300 transition-colors bg-white/5 hover:bg-white/10 px-3 py-2 min-h-[36px] rounded-lg border border-white/5"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors bg-white/[0.06] hover:bg-indigo-600/80 px-4 py-2 min-h-[38px] rounded-xl border border-white/10 shadow-sm active:scale-95"
             >
-              Lihat Teks Asli & Detail
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path d="M1 5h8M5 1l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <span>Lihat Teks Asli & Detail</span>
+              <svg width="12" height="12" viewBox="0 0 10 10" fill="none">
+                <path d="M1 5h8M5 1l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </Link>
           </div>

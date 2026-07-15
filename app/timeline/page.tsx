@@ -77,11 +77,11 @@ export default function DashboardPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <h1 className="font-display text-4xl font-light text-white mb-2">
-              Dashboard
+            <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-white mb-2 tracking-tight">
+              Timeline <span className="text-indigo-400 font-light">Klaster</span>
             </h1>
-            <p className="text-slate-500 text-sm">
-              Overview aktivitas Second Brain lu hari ini.
+            <p className="text-slate-400 text-xs sm:text-sm">
+              Jejak kronologis dan analisis aktivitas Second Brain lu.
             </p>
           </motion.div>
 
@@ -252,14 +252,14 @@ export default function DashboardPage() {
                 onChange={e => setTitleText(e.target.value)}
                 placeholder="Judul Catatan (opsional)"
                 disabled={isDumping}
-                className="w-full p-3 text-sm text-slate-200 placeholder-slate-500 bg-black/40 border border-white/10 rounded-xl outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all mb-3"
+                className="w-full p-3 text-base sm:text-sm text-slate-100 placeholder-slate-500 bg-black/50 border border-white/10 rounded-xl outline-none focus:border-indigo-500 transition-all mb-3"
               />
               <textarea
                 value={rawText}
                 onChange={e => setRawText(e.target.value)}
-                placeholder="Paste percakapan dari ChatGPT/Claude, atau ketik catatan, ide spontan, materi kuliah di sini..."
+                placeholder="Paste percakapan dari ChatGPT/Claude, atau ketik catatan, ide spontan, materi di sini..."
                 disabled={isDumping}
-                className="w-full h-44 p-4 text-sm text-slate-200 placeholder-slate-500 bg-black/40 border border-white/10 rounded-2xl outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all resize-none custom-scrollbar font-sans leading-relaxed mb-6"
+                className="w-full h-44 p-4 text-base sm:text-sm text-slate-100 placeholder-slate-500 bg-black/50 border border-white/10 rounded-2xl outline-none focus:border-indigo-500 transition-all resize-none custom-scrollbar font-sans leading-relaxed mb-6"
               />
 
               <div className="flex justify-end gap-3">

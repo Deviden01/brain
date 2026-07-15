@@ -13,6 +13,7 @@ export default function DashboardPage() {
   const [filtered, setFiltered] = useState<Memory[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [rawText, setRawText] = useState('')
+  const [titleText, setTitleText] = useState('')
   const [isDumping, setIsDumping] = useState(false)
 
   const handleDump = async () => {
@@ -22,13 +23,14 @@ export default function DashboardPage() {
       const res = await fetch('/api/memory', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rawText })
+        body: JSON.stringify({ rawText, title: titleText })
       })
       const newMemory = await res.json()
       if (newMemory && newMemory.id) {
         setMemories(prev => [newMemory, ...prev])
         setFiltered(prev => [newMemory, ...prev])
         setRawText('')
+        setTitleText('')
         setIsModalOpen(false)
       } else {
         alert("Gagal menyimpan: " + JSON.stringify(newMemory))
@@ -241,6 +243,17 @@ export default function DashboardPage() {
                 </button>
               </div>
 
+              <p className="text-slate-400 text-xs mb-3 leading-relaxed">
+                Isi judul sendiri (opsional) atau biarkan kosong agar AI merangkum dan membuatkan judul dari copas di bawah.
+              </p>
+              <input
+                type="text"
+                value={titleText}
+                onChange={e => setTitleText(e.target.value)}
+                placeholder="Judul Catatan (opsional)"
+                disabled={isDumping}
+                className="w-full p-3 text-sm text-slate-200 placeholder-slate-500 bg-black/40 border border-white/10 rounded-xl outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all mb-3"
+              />
               <textarea
                 value={rawText}
                 onChange={e => setRawText(e.target.value)}

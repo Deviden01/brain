@@ -11,6 +11,7 @@ export default function HomePage() {
   const [memories, setMemories] = useState<Memory[]>([])
   const [filtered, setFiltered] = useState<Memory[]>([])
   const [rawText, setRawText] = useState('')
+  const [titleText, setTitleText] = useState('')
   const [isDumping, setIsDumping] = useState(false)
   const [isMobileDumpOpen, setIsMobileDumpOpen] = useState(false)
 
@@ -34,7 +35,7 @@ export default function HomePage() {
       const res = await fetch('/api/memory', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rawText })
+        body: JSON.stringify({ rawText, title: titleText })
       })
       const newMemory = await res.json()
       if (newMemory && newMemory.id) {
@@ -42,6 +43,7 @@ export default function HomePage() {
         setMemories(prev => [newMemory, ...prev])
         setFiltered(prev => [newMemory, ...prev])
         setRawText('')
+        setTitleText('')
         setIsMobileDumpOpen(false)
       } else {
         alert("Gagal dump: " + JSON.stringify(newMemory))
@@ -97,14 +99,22 @@ export default function HomePage() {
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 text-xs">⚡</span>
                 <h2 className="text-white text-sm font-semibold">Quick Dump</h2>
               </div>
-              <p className="text-slate-400 text-[10px] mb-4 leading-relaxed">
-                <strong>Cara pakai:</strong> Copy percakapan dari Claude, ChatGPT, atau web manapun. Paste ke bawah, dan sistem kita bakal otomatis mengekstrak intisarinya jadi gelembung 3D baru.
+              <p className="text-slate-400 text-[10px] mb-3 leading-relaxed">
+                <strong>Tips:</strong> Isi judul sendiri atau kosongkan agar AI buat otomatis dari copas di bawah.
               </p>
+              <input
+                type="text"
+                value={titleText}
+                onChange={(e) => setTitleText(e.target.value)}
+                placeholder="Judul (opsional, mis: Fix Bug Next.js)"
+                className="w-full bg-black/40 text-xs text-slate-200 p-2.5 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 transition-colors placeholder:text-slate-600 mb-2"
+                style={{ backdropFilter: 'blur(10px)' }}
+              />
               <textarea 
                 value={rawText}
                 onChange={(e) => setRawText(e.target.value)}
-                placeholder="Paste teks panjang di sini..."
-                className="w-full h-24 bg-black/40 text-xs text-slate-200 p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors placeholder:text-slate-600 mb-2"
+                placeholder="Paste transkrip obrolan di sini..."
+                className="w-full h-24 bg-black/40 text-xs text-slate-200 p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors placeholder:text-slate-600 mb-2 custom-scrollbar"
                 style={{ backdropFilter: 'blur(10px)' }}
               />
               <button 
@@ -199,14 +209,21 @@ export default function HomePage() {
                   ✕
                 </button>
               </div>
-              <p className="text-slate-400 text-xs mb-4 leading-relaxed">
-                Copy percakapan atau catatan, paste di bawah. AI otomatis merangkum jadi gelembung 3D baru.
+              <p className="text-slate-400 text-xs mb-3 leading-relaxed">
+                Isi judul sendiri (opsional) atau biarkan kosong agar AI merangkum dan membuatkan judul dari copas di bawah.
               </p>
+              <input
+                type="text"
+                value={titleText}
+                onChange={(e) => setTitleText(e.target.value)}
+                placeholder="Judul Catatan (opsional)"
+                className="w-full bg-black/40 text-xs text-slate-200 p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 mb-3"
+              />
               <textarea 
                 value={rawText}
                 onChange={(e) => setRawText(e.target.value)}
-                placeholder="Paste teks panjang di sini..."
-                className="w-full h-36 bg-black/40 text-xs text-slate-200 p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 resize-none mb-4"
+                placeholder="Paste transkrip obrolan / teks panjang di sini..."
+                className="w-full h-36 bg-black/40 text-xs text-slate-200 p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 resize-none mb-4 custom-scrollbar"
               />
               <button 
                 onClick={handleDump}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import { Memory } from '@/types/memory'
 import { getTagColor } from '@/lib/tagColors'
@@ -24,7 +25,7 @@ function formatDate(iso: string | Date) {
 }
 
 export default function MemoryCard({ memory, onClose, onDelete, onEdit }: MemoryCardProps) {
-  const [showFull, setShowFull] = useState(false)
+  const [showFull, setShowFull] = useState(true)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const { day, date, time } = formatDate(memory.created_at)
 
@@ -131,21 +132,33 @@ export default function MemoryCard({ memory, onClose, onDelete, onEdit }: Memory
             </div>
 
             {/* Expand toggle */}
-            <button
-              onClick={() => setShowFull(v => !v)}
-              className="flex items-center gap-1.5 text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors mb-1"
-            >
-              <motion.span
-                animate={{ rotate: showFull ? 180 : 0 }}
-                transition={{ duration: 0.18 }}
-                className="inline-flex"
+            <div className="flex items-center justify-between mb-2">
+              <button
+                onClick={() => setShowFull(v => !v)}
+                className="flex items-center gap-1.5 text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
               >
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                <motion.span
+                  animate={{ rotate: showFull ? 180 : 0 }}
+                  transition={{ duration: 0.18 }}
+                  className="inline-flex"
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </motion.span>
+                {showFull ? 'Sembunyikan teks percakapan' : 'Lihat teks lengkap percakapan'}
+              </button>
+
+              <Link
+                href={`/memory/${memory.id}`}
+                className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 underline underline-offset-4 flex items-center gap-1"
+              >
+                <span>Halaman Penuh</span>
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                  <path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-              </motion.span>
-              {showFull ? 'Sembunyikan teks asli' : 'Lihat teks asli'}
-            </button>
+              </Link>
+            </div>
 
             <AnimatePresence>
               {showFull && (
@@ -156,15 +169,20 @@ export default function MemoryCard({ memory, onClose, onDelete, onEdit }: Memory
                   className="overflow-hidden"
                 >
                   <div
-                    className="mt-2 mb-4 p-4 rounded-xl"
+                    className="mt-1 mb-4 p-4 rounded-xl max-h-60 overflow-y-auto custom-scrollbar"
                     style={{
                       background: 'rgba(255,255,255,0.03)',
                       border: '1px solid rgba(255,255,255,0.07)',
                     }}
                   >
-                    <p className="text-slate-500 text-xs leading-relaxed whitespace-pre-wrap font-mono tracking-tight">
-                      {memory.content || memory.raw_text || ''}
-                    </p>
+                    {(memory.content || memory.raw_text || '')
+                      .split('\n')
+                      .filter(Boolean)
+                      .map((para: string, idx: number) => (
+                        <p key={idx} className="text-slate-300 text-xs md:text-sm leading-relaxed mb-3 font-sans last:mb-0">
+                          {para}
+                        </p>
+                      ))}
                   </div>
                 </motion.div>
               )}

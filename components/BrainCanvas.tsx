@@ -275,7 +275,8 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
           
         setTooltip(null)
       })
-      .on('click', (_: MouseEvent, d: BrainNode) => {
+      .on('click', (event: MouseEvent, d: BrainNode) => {
+        event.stopPropagation()
         setSelected(d.memory)
         setTooltip(null)
       })
@@ -283,6 +284,12 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
     // D3 Zoom for Drag/Rotation control
     const zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.3, 4])
+      .filter((event) => {
+        // Prevent zoom drag when clicking directly on a bubble or inside node
+        const target = event.target as HTMLElement
+        const isBubble = target?.classList?.contains('bubble-solid') || target?.classList?.contains('bubble-ring') || target?.closest('.node-group') !== null
+        return !isBubble && !event.ctrlKey && !event.button
+      })
       .on('zoom', (e) => {
         // e.transform.x & y are unbounded pan values. We map them to degrees!
         // Moving mouse right (positive x) -> rotate Y around positive

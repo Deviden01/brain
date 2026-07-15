@@ -82,17 +82,40 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
             Disimpan pada {formattedDate}
           </p>
 
-          <hr className="border-white/5 mb-10 relative z-10" />
+          <hr className="border-white/5 mb-8 relative z-10" />
 
-          {/* Raw Text */}
-          <div className="relative z-10">
-            <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-widest mb-4">
-              Teks Asli / Percakapan
-            </h3>
-            <div className="bg-black/30 rounded-2xl p-6 border border-white/5">
-              <p className="text-slate-300 text-base leading-relaxed whitespace-pre-wrap font-mono">
-                {memory.content || (memory as any).raw_text || ''}
+          {/* AI Executive Summary */}
+          <div className="relative z-10 mb-8">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 text-xs">✨</span>
+              <h3 className="text-sm font-semibold text-white uppercase tracking-widest">
+                AI Executive Summary
+              </h3>
+            </div>
+            <div className="bg-indigo-500/[0.06] rounded-2xl p-6 border border-indigo-500/20">
+              <p className="text-indigo-200/90 text-base md:text-lg leading-relaxed font-sans">
+                {memory.summary}
               </p>
+            </div>
+          </div>
+
+          {/* Full Conversation / Raw Text */}
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-slate-300 text-xs">📄</span>
+              <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-widest">
+                Teks Penuh / Percakapan Lengkap
+              </h3>
+            </div>
+            <div className="bg-black/40 rounded-2xl p-6 md:p-8 border border-white/10 shadow-inner">
+              {(memory.content || (memory as any).raw_text || '')
+                .split('\n')
+                .filter(Boolean)
+                .map((para: string, idx: number) => (
+                  <p key={idx} className="text-slate-200 text-sm md:text-base leading-[1.8] mb-4 font-sans last:mb-0">
+                    {para}
+                  </p>
+                ))}
             </div>
           </div>
 

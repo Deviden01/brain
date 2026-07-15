@@ -107,14 +107,14 @@ export default function HomePage() {
                 value={titleText}
                 onChange={(e) => setTitleText(e.target.value)}
                 placeholder="Judul (opsional, mis: Fix Bug Next.js)"
-                className="w-full bg-black/40 text-xs text-slate-200 p-2.5 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 transition-colors placeholder:text-slate-600 mb-2"
+                className="w-full bg-black/40 text-xs text-slate-200 p-2.5 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 transition-colors placeholder:text-slate-500 mb-2"
                 style={{ backdropFilter: 'blur(10px)' }}
               />
               <textarea 
                 value={rawText}
                 onChange={(e) => setRawText(e.target.value)}
                 placeholder="Paste transkrip obrolan di sini..."
-                className="w-full h-24 bg-black/40 text-xs text-slate-200 p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors placeholder:text-slate-600 mb-2 custom-scrollbar"
+                className="w-full h-24 bg-black/40 text-xs text-slate-200 p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors placeholder:text-slate-500 mb-2 custom-scrollbar"
                 style={{ backdropFilter: 'blur(10px)' }}
               />
               <button 
@@ -204,7 +204,8 @@ export default function HomePage() {
                 </div>
                 <button
                   onClick={() => setIsMobileDumpOpen(false)}
-                  className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-white"
+                  className="w-11 h-11 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                  aria-label="Tutup modal"
                 >
                   ✕
                 </button>

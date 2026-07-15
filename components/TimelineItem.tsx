@@ -95,14 +95,14 @@ export default function TimelineItem({ memory, index }: { memory: Memory; index:
               {memory.title}
             </h3>
 
-            <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
+            <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
               {memory.summary}
             </p>
 
             <Link 
               href={`/memory/${memory.id}`}
               onClick={e => e.stopPropagation()}
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-indigo-400 transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5"
+              className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-indigo-300 transition-colors bg-white/5 hover:bg-white/10 px-3 py-2 min-h-[36px] rounded-lg border border-white/5"
             >
               Lihat Teks Asli & Detail
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none">

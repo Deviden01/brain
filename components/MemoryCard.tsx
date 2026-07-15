@@ -103,7 +103,7 @@ export default function MemoryCard({ memory, onClose, onDelete, onEdit }: Memory
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
         className="fixed inset-0 z-40"
-        style={{ background: 'rgba(0,0,8,0.72)', backdropFilter: 'blur(6px)' }}
+        style={{ background: 'rgba(0,0,8,0.85)', backdropFilter: 'blur(12px)' }}
         onClick={onClose}
       />
 
@@ -139,16 +139,16 @@ export default function MemoryCard({ memory, onClose, onDelete, onEdit }: Memory
               >
                 {day}
               </span>
-              <span className="text-xs text-slate-500 font-medium">{date}</span>
-              <span className="text-slate-700 text-xs">·</span>
-              <span className="text-xs text-slate-500">{time}</span>
+              <span className="text-xs text-slate-400 font-medium">{date}</span>
+              <span className="text-slate-600 text-xs">·</span>
+              <span className="text-xs text-slate-400">{time}</span>
               {/* Close button */}
               <button
                 onClick={onClose}
                 aria-label="Tutup"
-                className="ml-auto w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-300 hover:bg-white/8 transition-colors"
+                className="ml-auto w-11 h-11 -mr-2 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
               >
-                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <svg width="14" height="14" viewBox="0 0 13 13" fill="none">
                   <path d="M1 1l11 11M12 1L1 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
                 </svg>
               </button>

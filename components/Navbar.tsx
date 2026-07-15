@@ -45,8 +45,8 @@ export default function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className={`relative px-4 py-1.5 rounded-[10px] text-sm font-medium transition-colors duration-200 ${
-                  active ? 'text-white' : 'text-slate-500 hover:text-slate-300'
+                className={`relative px-4 py-2 min-h-[36px] flex items-center justify-center rounded-[10px] text-sm font-medium transition-colors duration-200 ${
+                  active ? 'text-white' : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
                 {active && (
@@ -70,7 +70,7 @@ export default function Navbar() {
         {/* CTA — Simpan Ide */}
         <Link
           href="/input"
-          className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-sm font-semibold text-white transition-all duration-150 active:scale-95"
+          className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 min-h-[36px] rounded-xl text-sm font-semibold text-white transition-all duration-150 active:scale-95"
           style={{
             background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
             boxShadow: '0 2px 10px rgba(99,102,241,0.30)',

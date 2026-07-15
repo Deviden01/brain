@@ -142,8 +142,8 @@ export default function HomePage() {
           <div className="glass rounded-2xl p-2 flex gap-2">
             {[
               { label: 'Memori', value: memories.length },
-              { label: 'Tag Unik', value: [...new Set(memories.flatMap(m => m.tags))].length },
-              { label: 'Hari Aktif', value: new Set(memories.map(m => m.created_at?.slice(0, 10))).size },
+              { label: 'Tag Unik', value: [...new Set(memories.flatMap(m => m.tags || []))].length },
+              { label: 'Hari Aktif', value: new Set(memories.map(m => m.created_at ? new Date(m.created_at).toISOString().slice(0, 10) : '')).size },
             ].map(({ label, value }) => (
               <div key={label} className="px-5 py-2 text-center rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors border border-white/[0.02]">
                 <p className="text-lg font-bold text-white">{value}</p>

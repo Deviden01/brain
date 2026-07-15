@@ -34,10 +34,11 @@ export default function TimelineItem({ memory, index }: { memory: Memory; index:
         {/* ── Left: date column + glowing node dot + connector line ── */}
         <div className="flex flex-col items-center shrink-0 w-14 sm:w-16">
           <div
-            className="w-full rounded-2xl flex flex-col items-center py-2.5 px-1 select-none transition-transform group-hover:scale-105 shadow-md shadow-indigo-500/10"
+            className="w-full rounded-2xl flex flex-col items-center py-2.5 px-1 select-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 group-hover:border-indigo-500/40 shadow-md"
             style={{
-              background: 'rgba(99,102,241,0.12)',
+              background: 'rgba(13, 15, 26, 0.75)',
               border: '1px solid rgba(99,102,241,0.28)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.1) inset',
             }}
           >
             <span className="text-[10px] font-extrabold text-indigo-400 uppercase tracking-wider leading-none">
@@ -51,25 +52,27 @@ export default function TimelineItem({ memory, index }: { memory: Memory; index:
             </span>
           </div>
           {/* Spine dot & vertical line */}
-          <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_10px_#6366f1] my-2" />
+          <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_12px_#6366f1] my-2 group-hover:scale-125 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" />
           <div
             className="flex-1 w-0.5 min-h-[20px] rounded-full"
-            style={{ background: 'linear-gradient(180deg, rgba(99,102,241,0.3) 0%, rgba(255,255,255,0.05) 100%)' }}
+            style={{ background: 'linear-gradient(180deg, rgba(99,102,241,0.4) 0%, rgba(255,255,255,0.05) 100%)' }}
           />
         </div>
 
         {/* ── Right: content card ── */}
         <article
-          className="flex-1 mb-5 rounded-2xl cursor-pointer overflow-hidden transition-all duration-200 group-hover:-translate-y-1 group-hover:border-indigo-500/40 relative"
+          className="flex-1 mb-5 rounded-[22px] cursor-pointer overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1.5 group-hover:border-indigo-500/50 relative"
           style={{
-            background: 'rgba(255,255,255,0.03)',
+            background: 'rgba(13, 15, 26, 0.65)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
             border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+            boxShadow: '0 12px 36px -10px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.12) inset',
           }}
           onClick={() => setSelected(true)}
         >
           <div
-            className="absolute left-0 inset-y-0 w-1 bg-indigo-500 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0_0_12px_#6366f1]"
+            className="absolute left-0 inset-y-0 w-1 bg-indigo-500 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_0_16px_#6366f1]"
           />
 
           <div className="p-5 sm:p-6 relative">

@@ -111,12 +111,22 @@ export default function DashboardPage() {
             { label: 'Catatan Minggu Ini', value: memories.length > 0 ? `+${memories.length}` : '0', icon: '📈' },
             { label: 'Rata-rata Panjang', value: memories.length > 0 ? `${Math.round(memories.reduce((acc, m) => acc + (m.content || m.raw_text || '').split(/\s+/).length, 0) / memories.length)} kata` : '0 kata', icon: '✍️' },
           ].map((kpi, i) => (
-            <div key={i} className="glass p-5 rounded-2xl border border-white/[0.04]">
+            <div
+              key={i}
+              className="p-5 rounded-[22px] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-white/[0.14] group"
+              style={{
+                background: 'rgba(13, 15, 26, 0.65)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 12px 36px -10px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.1) inset',
+              }}
+            >
               <div className="flex items-center justify-between mb-3">
                 <span className="text-slate-400 text-xs font-semibold tracking-wide uppercase">{kpi.label}</span>
-                <span className="text-lg grayscale opacity-70">{kpi.icon}</span>
+                <span className="text-lg grayscale opacity-70 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">{kpi.icon}</span>
               </div>
-              <p className="text-2xl font-bold text-white tracking-tight">{kpi.value}</p>
+              <p className="text-2xl font-extrabold text-white tracking-tight">{kpi.value}</p>
             </div>
           ))}
         </motion.div>
@@ -129,11 +139,18 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="lg:col-span-2 glass rounded-3xl p-1 border border-white/[0.05]"
+            className="lg:col-span-2 rounded-[28px] p-1.5 transition-all duration-300"
+            style={{
+              background: 'rgba(13, 15, 26, 0.6)',
+              backdropFilter: 'blur(32px)',
+              WebkitBackdropFilter: 'blur(32px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: '0 16px 48px -12px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.12) inset',
+            }}
           >
-            <div className="bg-black/20 rounded-[22px] p-6 h-full min-h-[500px]">
+            <div className="bg-black/30 rounded-[24px] p-6 h-full min-h-[500px] border border-white/[0.03]">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                <h2 className="text-lg font-semibold text-white">Aktivitas Terbaru</h2>
+                <h2 className="text-lg font-bold text-white tracking-tight">Aktivitas Terbaru</h2>
                 <div className="w-full sm:w-64">
                   <SearchBar memories={memories} onFilter={setFiltered} />
                 </div>
@@ -145,7 +162,7 @@ export default function DashboardPage() {
                     <TimelineItem key={memory.id} memory={memory} index={i} />
                   ))
                 ) : (
-                  <div className="text-center py-16 text-slate-500 text-sm">
+                  <div className="text-center py-16 text-slate-400 text-sm font-medium">
                     Tidak ada memori yang cocok dengan pencarian.
                   </div>
                 )}
@@ -161,7 +178,16 @@ export default function DashboardPage() {
             className="flex flex-col gap-6"
           >
             {/* Widget 1: Top Categories */}
-            <div className="glass rounded-3xl p-6 border border-white/[0.04]">
+            <div
+              className="rounded-[24px] p-6 transition-all duration-300 hover:border-white/[0.14]"
+              style={{
+                background: 'rgba(13, 15, 26, 0.65)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 12px 36px -10px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.1) inset',
+              }}
+            >
               <h3 className="text-sm font-semibold text-white mb-6 uppercase tracking-wider text-slate-300">
                 Top Kategori
               </h3>

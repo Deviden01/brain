@@ -63,8 +63,10 @@ export default function HomePage() {
         <Navbar />
       </div>
 
-      {/* Full-Screen Brain Canvas Background */}
-      <div className="absolute inset-0 z-0 pt-14">
+      {/* Full-Screen Brain Canvas Background + Ambient Light Orbs */}
+      <div className="absolute inset-0 z-0 pt-14 pointer-events-auto">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/15 rounded-full blur-[140px] pointer-events-none animate-pulse" />
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-teal-500/15 rounded-full blur-[140px] pointer-events-none" />
         <BrainCanvas memories={filtered} />
       </div>
 
@@ -73,15 +75,22 @@ export default function HomePage() {
         
         {/* Top Floating Section (Header & Search Bar) */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-4 pointer-events-none max-w-7xl mx-auto w-full">
-          {/* Header */}
+          {/* Header Island */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="glass p-5 rounded-3xl pointer-events-auto border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl"
+            initial={{ opacity: 0, x: -20, scale: 0.98 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="p-5 rounded-3xl pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.01] hover:border-white/[0.14]"
+            style={{
+              background: 'rgba(13, 15, 26, 0.65)',
+              backdropFilter: 'blur(28px)',
+              WebkitBackdropFilter: 'blur(28px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: '0 12px 40px -10px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.1) inset',
+            }}
           >
-            <h1 className="font-display text-2xl md:text-3xl font-light text-white mb-1 tracking-tight">
-              Memory <span className="text-indigo-400 font-normal">Galaxy</span>
+            <h1 className="font-display text-2xl md:text-3xl font-extrabold text-white mb-1 tracking-tight">
+              Memory <span className="text-indigo-400 font-light">Galaxy</span>
             </h1>
             <p className="text-slate-400 text-xs">
               {memories.length} memori tersimpan · Jelajahi klaster ide & transkrip
@@ -106,22 +115,31 @@ export default function HomePage() {
 
         {/* Bottom Floating Section (Command Dock & KPI Cards) */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+          initial={{ opacity: 0, y: 24, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center gap-3 pointer-events-none max-w-4xl mx-auto w-full"
         >
-          {/* Desktop & Tablet Sleek AI Command Dock */}
+          {/* Desktop & Tablet Sleek Floating Prompt Capsule */}
           <div className="hidden md:block w-full pointer-events-auto">
-            <div className="glass p-4 rounded-3xl border border-white/10 shadow-[0_12px_48px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all">
-              <div className="flex items-center justify-between gap-3 mb-2">
+            <div
+              className="p-3.5 sm:p-4 rounded-[26px] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-white/[0.14] group"
+              style={{
+                background: 'rgba(13, 15, 26, 0.8)',
+                backdropFilter: 'blur(36px)',
+                WebkitBackdropFilter: 'blur(36px)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 20px 60px -15px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.12) inset',
+              }}
+            >
+              <div className="flex items-center justify-between gap-3 mb-2 px-1">
                 <div className="flex items-center gap-2">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 text-xs">⚡</span>
-                  <span className="text-white text-xs font-semibold">AI Quick Dump Dock</span>
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 text-xs shadow-[0_0_12px_rgba(99,102,241,0.3)]">⚡</span>
+                  <span className="text-white text-xs font-semibold tracking-tight">AI Quick Dump Prompt</span>
                 </div>
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-white/5"
+                  className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer px-2.5 py-1 rounded-full hover:bg-white/[0.06] border border-transparent hover:border-white/10"
                 >
                   {isExpanded ? 'Sederhanakan ✕' : 'Tulis Judul Manual +'}
                 </button>
@@ -133,6 +151,7 @@ export default function HomePage() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                     className="overflow-hidden mb-2"
                   >
                     <input
@@ -140,25 +159,32 @@ export default function HomePage() {
                       value={titleText}
                       onChange={(e) => setTitleText(e.target.value)}
                       placeholder="Judul Catatan (opsional)"
-                      className="w-full bg-black/50 text-base md:text-sm text-slate-100 p-2.5 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-500"
+                      className="w-full bg-black/40 text-base md:text-sm text-slate-100 p-3 rounded-2xl border border-white/10 focus:outline-none focus:border-indigo-500/80 focus:shadow-[0_0_20px_rgba(99,102,241,0.25)] transition-all placeholder:text-slate-500"
                     />
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2.5 items-center">
                 <textarea 
                   value={rawText}
                   onChange={(e) => setRawText(e.target.value)}
-                  placeholder="Paste transkrip obrolan / ide panjang di sini... AI akan merangkum otomatis."
-                  className="flex-1 h-14 bg-black/50 text-base md:text-sm text-slate-100 p-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500 resize-none transition-colors placeholder:text-slate-500 custom-scrollbar"
+                  placeholder="Paste obrolan / ide panjang di sini... AI akan otomatis merangkum & menata."
+                  className="flex-1 h-13 bg-black/40 text-base md:text-sm text-slate-100 px-4 py-3 rounded-2xl border border-white/10 focus:outline-none focus:border-indigo-500/80 focus:shadow-[0_0_24px_rgba(99,102,241,0.3)] resize-none transition-all placeholder:text-slate-500 custom-scrollbar leading-snug"
                 />
                 <button 
                   onClick={handleDump}
                   disabled={isDumping || !rawText.trim()}
-                  className="px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center shadow-lg shadow-indigo-500/20 active:scale-95 shrink-0"
+                  className="h-13 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center shadow-[0_0_24px_rgba(99,102,241,0.4)] hover:shadow-[0_0_32px_rgba(99,102,241,0.6)] hover:scale-105 active:scale-95 shrink-0 border border-indigo-400/30"
                 >
-                  {isDumping ? 'Mengekstrak...' : 'Dump ke Galaksi'}
+                  {isDumping ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Ekstrak...</span>
+                    </span>
+                  ) : (
+                    <span>Dump ke Galaksi ⚡</span>
+                  )}
                 </button>
               </div>
             </div>
@@ -169,22 +195,29 @@ export default function HomePage() {
             {/* Mobile Quick Dump Trigger Button */}
             <button
               onClick={() => setIsMobileDumpOpen(true)}
-              className="md:hidden flex-1 py-3 px-5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-2xl shadow-xl shadow-indigo-500/30 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+              className="md:hidden flex-1 py-3.5 px-5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-full shadow-[0_0_24px_rgba(99,102,241,0.4)] flex items-center justify-center gap-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-95 border border-indigo-400/30 cursor-pointer"
             >
               <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 text-xs">⚡</span>
               <span>Quick Dump AI</span>
             </button>
 
-            {/* KPI Cards (Compact & sleek on both desktop and mobile) */}
-            <div className="glass rounded-2xl p-1.5 flex gap-1.5 border border-white/10 ml-auto shadow-lg backdrop-blur-xl shrink-0">
+            {/* KPI Cards (Compact & weightless pill badges) */}
+            <div
+              className="rounded-full px-3 py-1.5 flex items-center gap-2 ml-auto shadow-lg backdrop-blur-2xl shrink-0 transition-all duration-300 hover:border-white/[0.14]"
+              style={{
+                background: 'rgba(13, 15, 26, 0.75)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.1) inset',
+              }}
+            >
               {[
                 { label: 'Memori', value: memories.length },
-                { label: 'Tag Unik', value: [...new Set(memories.flatMap(m => m.tags || []))].length },
-                { label: 'Hari Aktif', value: new Set(memories.map(m => m.created_at ? new Date(m.created_at).toISOString().slice(0, 10) : '')).size },
-              ].map(({ label, value }) => (
-                <div key={label} className="px-3 py-1 text-center rounded-xl bg-white/[0.03] border border-white/[0.03] min-w-[56px]">
-                  <p className="text-sm font-bold text-white">{value}</p>
-                  <p className="text-[8px] text-slate-400 uppercase tracking-wider mt-0.5">{label}</p>
+                { label: 'Tag', value: [...new Set(memories.flatMap(m => m.tags || []))].length },
+                { label: 'Hari', value: new Set(memories.map(m => m.created_at ? new Date(m.created_at).toISOString().slice(0, 10) : '')).size },
+              ].map(({ label, value }, i) => (
+                <div key={label} className={`px-2.5 py-0.5 text-center flex items-center gap-1.5 ${i > 0 ? 'border-l border-white/10 pl-3' : ''}`}>
+                  <span className="text-xs font-extrabold text-white">{value}</span>
+                  <span className="text-[9px] text-slate-400 uppercase tracking-wider font-semibold">{label}</span>
                 </div>
               ))}
             </div>

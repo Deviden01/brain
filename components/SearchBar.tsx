@@ -93,15 +93,18 @@ export default function SearchBar({ memories, onFilter }: SearchBarProps) {
           value={query}
           onChange={e => handleQuery(e.target.value)}
           onFocus={() => setFocused(true)}
-          placeholder="Cari judul, isi, atau ketik asbun..."
-          className="w-full h-11 pl-10 pr-10 text-sm text-slate-200 placeholder-slate-500 rounded-xl outline-none transition-all duration-200"
+          placeholder="Cari judul, isi, atau ketik ide..."
+          className="w-full h-11 pl-10 pr-10 text-base sm:text-sm text-slate-100 placeholder-slate-500 rounded-full outline-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{
-            background: 'rgba(0,0,0,0.4)',
-            backdropFilter: 'blur(12px)',
+            background: 'rgba(13, 15, 26, 0.65)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
             border: focused
-              ? '1px solid rgba(99,102,241,0.5)'
+              ? '1px solid rgba(99,102,241,0.6)'
               : '1px solid rgba(255,255,255,0.08)',
-            boxShadow: focused ? '0 0 12px rgba(99,102,241,0.2)' : '0 4px 6px rgba(0,0,0,0.1)',
+            boxShadow: focused
+              ? '0 0 24px -4px rgba(99,102,241,0.35), 0 1px 0 rgba(255,255,255,0.1) inset'
+              : '0 4px 16px -4px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.06) inset',
           }}
         />
 

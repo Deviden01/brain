@@ -110,18 +110,20 @@ export default function MemoryCard({ memory, onClose, onDelete, onEdit }: Memory
       {/* Card */}
       <motion.div
         key="card"
-        initial={{ opacity: 0, y: 56 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 56 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed bottom-0 left-0 right-0 z-50 md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[520px] md:w-full"
+        initial={{ opacity: 0, y: 56, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 56, scale: 0.96 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed bottom-0 left-0 right-0 z-50 md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[540px] md:w-full"
       >
         <div
-          className="rounded-t-[28px] md:rounded-2xl overflow-hidden shadow-2xl"
+          className="rounded-t-[32px] md:rounded-[28px] overflow-hidden transition-all duration-300"
           style={{
-            background: 'rgba(11, 11, 34, 0.95)',
-            backdropFilter: 'blur(28px)',
+            background: 'rgba(13, 15, 26, 0.85)',
+            backdropFilter: 'blur(36px)',
+            WebkitBackdropFilter: 'blur(36px)',
             border: '1px solid rgba(255,255,255,0.09)',
+            boxShadow: '0 24px 64px -16px rgba(0,0,0,0.85), 0 1px 0 rgba(255,255,255,0.12) inset',
           }}
         >
           {/* Drag handle mobile */}

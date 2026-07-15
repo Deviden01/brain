@@ -46,11 +46,20 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
         </Link>
 
         {/* Content Card */}
-        <div className="glass rounded-3xl p-8 md:p-12 border border-white/[0.08] relative overflow-hidden">
+        <div
+          className="rounded-[32px] p-8 md:p-12 transition-all duration-300 relative overflow-hidden"
+          style={{
+            background: 'rgba(13, 15, 26, 0.75)',
+            backdropFilter: 'blur(32px)',
+            WebkitBackdropFilter: 'blur(32px)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: '0 24px 64px -16px rgba(0,0,0,0.85), 0 1px 0 rgba(255,255,255,0.12) inset',
+          }}
+        >
           {/* Subtle background glow based on first tag color */}
           {memory.tags.length > 0 && (
             <div 
-              className="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none"
+              className="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-[140px] opacity-25 pointer-events-none animate-pulse"
               style={{ background: getTagColor(memory.tags[0]) }}
             />
           )}
@@ -62,21 +71,21 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
               return (
                 <span
                   key={tag}
-                  className="text-xs px-3 py-1 rounded-md font-semibold tracking-wide"
+                  className="text-xs px-3 py-1 rounded-lg font-semibold tracking-wide"
                   style={{
                     background: c + '18',
                     color: c,
                     border: `1px solid ${c}28`,
                   }}
                 >
-                  {tag}
+                  #{tag}
                 </span>
               )
             })}
           </div>
 
           {/* Title & Meta */}
-          <h1 className="font-display text-4xl md:text-5xl font-light text-white leading-tight mb-4 relative z-10">
+          <h1 className="font-display text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4 relative z-10 tracking-tight">
             {memory.title}
           </h1>
           <p className="text-slate-500 text-sm mb-10 relative z-10">

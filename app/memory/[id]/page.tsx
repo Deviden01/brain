@@ -1,11 +1,14 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
-import { mockMemories } from '@/lib/mockData'
+import { prisma } from '@/lib/prisma'
 import { getTagColor } from '@/lib/tagColors'
 
-export default function MemoryDetailPage({ params }: { params: { id: string } }) {
-  const memory = mockMemories.find(m => m.id === params.id)
+export default async function MemoryDetailPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
+  const resolvedParams = await Promise.resolve(params)
+  const memory = await prisma.memory.findUnique({
+    where: { id: resolvedParams.id }
+  })
   
   if (!memory) {
     return notFound()
@@ -53,7 +56,7 @@ export default function MemoryDetailPage({ params }: { params: { id: string } })
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-6 relative z-10">
-            {memory.tags.map(tag => {
+            {(memory.tags || []).map(tag => {
               const c = getTagColor(tag)
               return (
                 <span
@@ -88,7 +91,7 @@ export default function MemoryDetailPage({ params }: { params: { id: string } })
             </h3>
             <div className="bg-black/30 rounded-2xl p-6 border border-white/5">
               <p className="text-slate-300 text-base leading-relaxed whitespace-pre-wrap font-mono">
-                {memory.raw_text}
+                {memory.content || (memory as any).raw_text || ''}
               </p>
             </div>
           </div>

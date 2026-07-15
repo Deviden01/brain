@@ -12,7 +12,7 @@ interface MemoryCardProps {
   onEdit?: (memory: Memory) => void
 }
 
-function formatDate(iso: string) {
+function formatDate(iso: string | Date) {
   const d = new Date(iso)
   const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
@@ -102,7 +102,7 @@ export default function MemoryCard({ memory, onClose, onDelete, onEdit }: Memory
           <div className="px-6">
             {/* Tags */}
             <div className="flex flex-wrap gap-1.5 mb-4">
-              {memory.tags.map(tag => {
+              {(memory.tags || []).map(tag => {
                 const c = getTagColor(tag)
                 return (
                   <span
@@ -163,7 +163,7 @@ export default function MemoryCard({ memory, onClose, onDelete, onEdit }: Memory
                     }}
                   >
                     <p className="text-slate-500 text-xs leading-relaxed whitespace-pre-wrap font-mono tracking-tight">
-                      {memory.raw_text}
+                      {memory.content || memory.raw_text || ''}
                     </p>
                   </div>
                 </motion.div>

@@ -1,26 +1,38 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion } from 'motion/react'
 import Navbar from '@/components/Navbar'
 import TimelineItem from '@/components/TimelineItem'
 import SearchBar from '@/components/SearchBar'
-import { mockMemories } from '@/lib/mockData'
 import { Memory } from '@/types/memory'
 import { getTagColor } from '@/lib/tagColors'
 
 export default function DashboardPage() {
-  const [filtered, setFiltered] = useState<Memory[]>(mockMemories)
+  const [memories, setMemories] = useState<Memory[]>([])
+  const [filtered, setFiltered] = useState<Memory[]>([])
+
+  useEffect(() => {
+    fetch('/api/memory')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setMemories(data)
+          setFiltered(data)
+        }
+      })
+      .catch(err => console.error("Gagal load data", err))
+  }, [])
 
   // Calculate some fun dashboard stats
   const uniqueTags = useMemo(() => {
-    const tags = mockMemories.flatMap(m => m.tags)
+    const tags = memories.flatMap(m => m.tags || [])
     const counts = tags.reduce((acc, tag) => {
       acc[tag] = (acc[tag] || 0) + 1
       return acc
     }, {} as Record<string, number>)
     return Object.entries(counts).sort((a, b) => b[1] - a[1])
-  }, [])
+  }, [memories])
 
   return (
     <main className="min-h-screen bg-[#05050A] pb-16">
@@ -63,10 +75,10 @@ export default function DashboardPage() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4"
         >
           {[
-            { label: 'Total Memori', value: mockMemories.length, icon: '📦' },
+            { label: 'Total Memori', value: memories.length, icon: '📦' },
             { label: 'Kategori Aktif', value: uniqueTags.length, icon: '🏷️' },
-            { label: 'Catatan Minggu Ini', value: '+12', icon: '📈' },
-            { label: 'Rata-rata Panjang', value: '142 kata', icon: '✍️' },
+            { label: 'Catatan Minggu Ini', value: memories.length > 0 ? `+${memories.length}` : '0', icon: '📈' },
+            { label: 'Rata-rata Panjang', value: memories.length > 0 ? `${Math.round(memories.reduce((acc, m) => acc + (m.content || m.raw_text || '').split(/\s+/).length, 0) / memories.length)} kata` : '0 kata', icon: '✍️' },
           ].map((kpi, i) => (
             <div key={i} className="glass p-5 rounded-2xl border border-white/[0.04]">
               <div className="flex items-center justify-between mb-3">
@@ -92,7 +104,7 @@ export default function DashboardPage() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <h2 className="text-lg font-semibold text-white">Aktivitas Terbaru</h2>
                 <div className="w-full sm:w-64">
-                  <SearchBar memories={mockMemories} onFilter={setFiltered} />
+                  <SearchBar memories={memories} onFilter={setFiltered} />
                 </div>
               </div>
 
@@ -123,8 +135,8 @@ export default function DashboardPage() {
                 Top Kategori
               </h3>
               <div className="flex flex-col gap-4">
-                {uniqueTags.slice(0, 6).map(([tag, count], i) => {
-                  const max = uniqueTags[0][1]
+                {uniqueTags.length > 0 ? uniqueTags.slice(0, 6).map(([tag, count], i) => {
+                  const max = uniqueTags[0]?.[1] || 1
                   const pct = Math.round((count / max) * 100)
                   const color = getTagColor(tag)
                   
@@ -145,7 +157,9 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   )
-                })}
+                }) : (
+                  <div className="text-slate-500 text-xs py-4 text-center">Belum ada kategori.</div>
+                )}
               </div>
             </div>
 

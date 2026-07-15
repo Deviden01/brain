@@ -7,7 +7,7 @@ import { Memory } from '@/types/memory'
 import { getTagColor } from '@/lib/tagColors'
 import MemoryCard from './MemoryCard'
 
-function formatDate(iso: string) {
+function formatDate(iso: string | Date) {
   const d = new Date(iso)
   const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
@@ -73,7 +73,7 @@ export default function TimelineItem({ memory, index }: { memory: Memory; index:
 
           <div className="p-5 relative">
             <div className="flex flex-wrap gap-1.5 mb-2.5">
-              {memory.tags.map(tag => {
+              {(memory.tags || []).map(tag => {
                 const c = getTagColor(tag)
                 return (
                   <span

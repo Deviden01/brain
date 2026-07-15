@@ -1,0 +1,20 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Memory {
+  id           String   @id @default(cuid())
+  title        String
+  summary      String
+  content      String   @db.Text
+  tags         String[]
+  source_url   String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}

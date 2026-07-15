@@ -42,9 +42,9 @@ export default function SearchBar({ memories, onFilter }: SearchBarProps) {
       const lower = q.toLowerCase()
       result = result.filter(
         m =>
-          m.title.toLowerCase().includes(lower) ||
-          m.summary.toLowerCase().includes(lower) ||
-          m.raw_text.toLowerCase().includes(lower) ||
+          (m.title || '').toLowerCase().includes(lower) ||
+          (m.summary || '').toLowerCase().includes(lower) ||
+          (m.content || m.raw_text || '').toLowerCase().includes(lower) ||
           (m.tags && m.tags.some(t => t.toLowerCase().includes(lower)))
       )
     }
@@ -55,8 +55,8 @@ export default function SearchBar({ memories, onFilter }: SearchBarProps) {
   const dropdownList = query.trim()
     ? memories.filter(
         m =>
-          m.title.toLowerCase().includes(query.toLowerCase()) ||
-          m.summary.toLowerCase().includes(query.toLowerCase())
+          (m.title || '').toLowerCase().includes(query.toLowerCase()) ||
+          (m.summary || '').toLowerCase().includes(query.toLowerCase())
       )
     : memories
 

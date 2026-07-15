@@ -25,7 +25,7 @@ function formatDate(iso: string | Date) {
 }
 
 export default function MemoryCard({ memory, onClose, onDelete, onEdit }: MemoryCardProps) {
-  const [showFull, setShowFull] = useState(true)
+  const [activeTab, setActiveTab] = useState<'summary' | 'chat'>('summary')
   const [confirmDelete, setConfirmDelete] = useState(false)
   const { day, date, time } = formatDate(memory.created_at)
 
@@ -121,72 +121,76 @@ export default function MemoryCard({ memory, onClose, onDelete, onEdit }: Memory
               })}
             </div>
 
-            {/* Summary — left border accent */}
-            <div
-              className="pl-3 mb-4"
-              style={{ borderLeft: '2px solid rgba(99,102,241,0.35)' }}
-            >
-              <p className="text-slate-300 text-sm leading-[1.7]">
-                {memory.summary}
-              </p>
+            {/* Mode Tab Switcher */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex p-1 rounded-xl bg-black/40 border border-white/10 w-full">
+                <button
+                  onClick={() => setActiveTab('summary')}
+                  className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    activeTab === 'summary'
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <span>✨</span>
+                  <span>Ringkasan AI</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('chat')}
+                  className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    activeTab === 'chat'
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <span>💬</span>
+                  <span>Full Percakapan</span>
+                </button>
+              </div>
             </div>
 
-            {/* Expand toggle */}
-            <div className="flex items-center justify-between mb-2">
-              <button
-                onClick={() => setShowFull(v => !v)}
-                className="flex items-center gap-1.5 text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
-              >
-                <motion.span
-                  animate={{ rotate: showFull ? 180 : 0 }}
-                  transition={{ duration: 0.18 }}
-                  className="inline-flex"
+            {/* Tab Contents */}
+            <div className="mb-4">
+              {activeTab === 'summary' ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="pl-3 py-1"
+                  style={{ borderLeft: '2px solid rgba(99,102,241,0.5)' }}
                 >
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </motion.span>
-                {showFull ? 'Sembunyikan teks percakapan' : 'Lihat teks lengkap percakapan'}
-              </button>
+                  <p className="text-slate-200 text-sm leading-[1.7]">
+                    {memory.summary}
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-4 rounded-xl max-h-64 overflow-y-auto custom-scrollbar bg-black/30 border border-white/10"
+                >
+                  {(memory.content || memory.raw_text || '')
+                    .split('\n')
+                    .filter(Boolean)
+                    .map((para: string, idx: number) => (
+                      <p key={idx} className="text-slate-300 text-xs md:text-sm leading-relaxed mb-3 font-sans last:mb-0">
+                        {para}
+                      </p>
+                    ))}
+                </motion.div>
+              )}
+            </div>
 
+            <div className="flex justify-end mb-2">
               <Link
                 href={`/memory/${memory.id}`}
                 className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 underline underline-offset-4 flex items-center gap-1"
               >
-                <span>Halaman Penuh</span>
+                <span>Buka di Halaman Penuh</span>
                 <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
                   <path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
             </div>
-
-            <AnimatePresence>
-              {showFull && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div
-                    className="mt-1 mb-4 p-4 rounded-xl max-h-60 overflow-y-auto custom-scrollbar"
-                    style={{
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid rgba(255,255,255,0.07)',
-                    }}
-                  >
-                    {(memory.content || memory.raw_text || '')
-                      .split('\n')
-                      .filter(Boolean)
-                      .map((para: string, idx: number) => (
-                        <p key={idx} className="text-slate-300 text-xs md:text-sm leading-relaxed mb-3 font-sans last:mb-0">
-                          {para}
-                        </p>
-                      ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
 
           {/* ── Actions ── */}

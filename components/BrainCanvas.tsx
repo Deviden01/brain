@@ -218,7 +218,7 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
       // Apply coordinates
       nodeContainers
         .attr('transform', d => `translate(${d.projX}, ${d.projY}) scale(${d.scale})`)
-        .style('opacity', d => d.alpha)
+        .style('opacity', d => d.alpha ?? 1)
       
       nodeContainers.selectAll('.node-label')
         .attr('y', d => (d as BrainNode).radius + 22 / ((d as BrainNode).scale || 1)) // keep label distance proportional

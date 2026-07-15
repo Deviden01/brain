@@ -59,6 +59,12 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
 
     if (!memories || memories.length === 0) return
 
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    const baseRadius = isMobile ? 65 : 30
+    const radiusMultiplier = isMobile ? 18 : 8
+    const maxRadius = isMobile ? 150 : 70
+    const baseFontSize = isMobile ? 28 : 14
+
     const clusterCenters: Record<string, { x: number; y: number }> = {}
     const numClusters = uniqueTags.length || 1
     uniqueTags.forEach((tag, idx) => {
@@ -91,7 +97,7 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
       const primaryTag = (m.tags && m.tags[0]) || 'default'
       const cluster = clusterCenters[primaryTag] || CENTER
       
-      const radius = Math.max(30, Math.min(70, 30 + degree * 8))
+      const radius = Math.max(baseRadius, Math.min(maxRadius, baseRadius + degree * radiusMultiplier))
       const angle = Math.random() * Math.PI * 2
       const r = 100 + Math.random() * 400
 
@@ -162,7 +168,7 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
       .attr('class', 'node-label')
       .attr('text-anchor', 'middle')
       .attr('fill', '#ffffff')
-      .attr('font-size', '14')
+      .attr('font-size', String(baseFontSize))
       .attr('font-family', 'Inter, sans-serif')
       .attr('font-weight', '500')
       .attr('pointer-events', 'none')
@@ -221,8 +227,8 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
         .style('opacity', d => d.alpha ?? 1)
       
       nodeContainers.selectAll('.node-label')
-        .attr('y', d => (d as BrainNode).radius + 22 / ((d as BrainNode).scale || 1)) // keep label distance proportional
-        .attr('font-size', d => 14 / ((d as BrainNode).scale || 1)) // counter-scale text so it stays readable
+        .attr('y', d => (d as BrainNode).radius + (isMobile ? 36 : 22) / ((d as BrainNode).scale || 1)) // keep label distance proportional
+        .attr('font-size', d => baseFontSize / ((d as BrainNode).scale || 1)) // counter-scale text so it stays readable
 
       linkLines
         .each(function(l) {
@@ -302,7 +308,7 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
       })
 
     svg.call(zoomBehavior)
-    svg.call(zoomBehavior.transform, d3.zoomIdentity.translate(20, -10).scale(1.1)) // Initial cool angle, zoomed in for big nodes
+    svg.call(zoomBehavior.transform, d3.zoomIdentity.translate(isMobile ? 40 : 20, isMobile ? -30 : -10).scale(isMobile ? 0.95 : 1.1)) // Initial cool angle, zoomed in for big nodes
 
     return () => { sim.stop() }
   }, [memories, uniqueTags])
@@ -333,7 +339,7 @@ export default function BrainCanvas({ memories = [] }: { memories: Memory[] }) {
         )}
       </svg>
 
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 px-6 py-2.5 bg-black/40 border border-white/10 backdrop-blur-md rounded-full text-[10px] text-slate-300 tracking-widest pointer-events-none">
+      <div className="hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-20 items-center gap-4 px-6 py-2.5 bg-black/40 border border-white/10 backdrop-blur-md rounded-full text-[10px] text-slate-300 tracking-widest pointer-events-none">
         <span>🖱️ SCROLL TO ZOOM</span>
         <span className="w-1 h-1 rounded-full bg-slate-600" />
         <span>👆 DRAG TO ROTATE 3D</span>

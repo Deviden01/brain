@@ -65,10 +65,10 @@ export default function DashboardPage() {
   }, [memories])
 
   return (
-    <main className="min-h-screen bg-[#05050A] pb-16">
+    <main className="min-h-dvh bg-[#05050A] pb-16 pb-safe overflow-x-hidden">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto pt-28 px-6 lg:px-8 flex flex-col gap-8">
+      <div className="max-w-7xl mx-auto pt-20 pt-safe sm:pt-28 px-4 sm:px-6 lg:px-8 flex flex-col gap-6 sm:gap-8">
         
         {/* ── 1. Top Header & CTA ── */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
@@ -220,37 +220,66 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Widget 2: Quick Tips */}
-            <div className="glass rounded-3xl p-6 border border-indigo-500/20 bg-indigo-500/5">
-              <h3 className="text-sm font-semibold text-indigo-400 mb-3">
-                💡 Second Brain Tip
+            {/* Widget 2: Tag Cloud */}
+            <div
+              className="rounded-[24px] p-6 transition-all duration-300 hover:border-white/[0.14]"
+              style={{
+                background: 'rgba(13, 15, 26, 0.65)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 12px 36px -10px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.1) inset',
+              }}
+            >
+              <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider text-slate-300">
+                Tag Cloud
               </h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Menghubungkan catatan (linking) jauh lebih penting daripada mengkategorikan (tagging). Coba gabungkan ide dari tag <span className="text-emerald-400 font-medium">#{uniqueTags[1]?.[0] || 'work'}</span> dengan <span className="text-amber-400 font-medium">#{uniqueTags[2]?.[0] || 'idea'}</span> untuk mendapatkan insight baru.
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {uniqueTags.map(([tag]) => {
+                  const color = getTagColor(tag)
+                  return (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 rounded-full text-xs font-medium border border-white/10"
+                      style={{
+                        backgroundColor: `${color}15`,
+                        color: color,
+                        borderColor: `${color}30`
+                      }}
+                    >
+                      #{tag}
+                    </span>
+                  )
+                })}
+              </div>
             </div>
           </motion.div>
-
         </div>
       </div>
 
-      {/* ── Add Memory Modal ── */}
+      {/* ── 4. Modal Tambah Memori ── */}
       <AnimatePresence>
         {isModalOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md pointer-events-auto"
             onClick={() => setIsModalOpen(false)}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-              className="glass rounded-3xl p-6 md:p-8 w-full max-w-lg border border-white/10 shadow-2xl relative overflow-hidden"
-              style={{ background: 'rgba(15, 20, 35, 0.95)' }}
+              exit={{ opacity: 0, scale: 0.95, y: 40 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="rounded-t-[32px] sm:rounded-3xl p-6 pb-8 pb-safe w-full max-w-lg border-t sm:border border-white/10 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+              style={{
+                background: 'rgba(13, 15, 26, 0.95)',
+                backdropFilter: 'blur(36px)',
+                WebkitBackdropFilter: 'blur(36px)',
+                border: '1px solid rgba(255, 255, 255, 0.09)',
+                boxShadow: '0 25px 80px -15px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 255, 255, 0.15) inset',
+              }}
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-4">

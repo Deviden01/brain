@@ -21,6 +21,7 @@ interface BrainNode extends d3.SimulationNodeDatum {
   projY?: number
   projZ?: number
   scale?: number
+  alpha?: number
 }
 
 interface BrainLink extends d3.SimulationLinkDatum<BrainNode> {
